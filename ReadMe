@@ -1,0 +1,9 @@
+To save images from client html page, open /CanvasAppServer in terminal and run <node server.js> or <npm start> to boot up the server.
+
+    First make sure to set the variable ‘server_url’ (first line of code in functions.js held in /CanvasAppClient) to your local ip on port 8000.
+        Ex: search_url = "http://10.0.0.107:8000";
+    
+    Lastly, make sure you have Node Js installed with npm (Node Package Manager). Dependencies can be found in package.json.
+        Run <npm install express multer cors> if dependencies are not met. 
+
+With the server now running properly you can save images to it with http requests and re-load them back!
