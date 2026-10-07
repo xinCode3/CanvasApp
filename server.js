@@ -77,7 +77,7 @@ app.post("/data/img", upload.single("img-file"), (req, res) => {
 
 });
 
-const PORT = 8000;
+const PORT = 3000;
 
 app.listen(PORT, () => {
     console.log(`CanvasApp available at http://localhost:${PORT}/client/index.html`);

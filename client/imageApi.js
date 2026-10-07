@@ -1,6 +1,6 @@
 import { state } from "./canvasState.js";
 import { clearCanvas, drawCanvas } from "./canvasRenderer.js";
-const server_url = "http://10.0.0.107:8000";
+import { server_url } from "./server_url.js";
 
 export async function loadImages() {
 	const res = await fetch(server_url+"/data/img");
@@ -16,7 +16,7 @@ export async function displayImages(images, canvas) {
     grid.classList.add("image-grid");
 
     overlay.addEventListener("click", event => {
-        if (event.target === overlay) overlay.remove();
+        if (event.target == overlay) overlay.remove();
         return;
     });
     grid.addEventListener("click", (event) => {
@@ -41,9 +41,9 @@ export async function displayImages(images, canvas) {
             );
             const content = await response.json();
             state.paths = content.paths;
-            clearCanvas(ctx);
-            drawCanvas(ctx);
             overlay.remove();
+            clearCanvas(ctx);
+            await drawCanvas(ctx);            
         });
 
         const index = image.filename.lastIndexOf("-");

@@ -6,9 +6,11 @@ const saveButton = document.getElementById("save");
 const loadButton = document.getElementById("load");
 const undoButton = document.getElementById("undo");
 const clearButton = document.getElementById("clear");
+const currentColor = document.getElementById("selected_color");
 
 const ctx = canvas.getContext('2d');
-const currentColor = document.getElementById("selected_color");
+ctx.lineCap = "round";
+ctx.lineJoin = "round";
 
 ui.bindSaveButton(canvas, saveButton);
 ui.bindLoadButton(canvas, loadButton);

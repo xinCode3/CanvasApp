@@ -17,6 +17,10 @@ h1 {
     -webkit-text-stroke: 0.75px white;
 }
 
+canvas {
+    position: relative;
+}
+
 button {
     cursor: pointer;
     border: none;
@@ -86,6 +90,14 @@ button:hover {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+
+.pencil {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 2px;
 }
 
 .thumb {
