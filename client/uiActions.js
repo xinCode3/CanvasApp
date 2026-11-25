@@ -1,6 +1,6 @@
-import { state, clear } from "./canvasState.js";
+import { state, clearState } from "./canvasState.js";
 import { loadImages, displayImages, saveCanvas } from "./imageApi.js";
-import { clearCanvas, drawCanvas, is_drawing, cancel } from "./canvasRenderer.js";
+import { clearCanvas, drawCanvas, updateCanvas, is_drawing, cancel } from "./canvasRenderer.js";
 
 export function bindSaveButton(canvas, saveButton) {
     saveButton.addEventListener("click", () => {
@@ -24,7 +24,7 @@ export function bindUndoButton(canvas, undoButton) {
 	    const ctx = canvas.getContext("2d");
 	    clearCanvas(ctx);
 	    state.paths.pop();
-        drawCanvas(ctx);
+        updateCanvas(ctx);
     });
 }
 
@@ -34,6 +34,6 @@ export function bindClearButton(canvas, clearButton) {
 	    const ctx = canvas.getContext("2d");
         cancel(true);
     	clearCanvas(ctx);
-    	clear();
+    	clearState();
 	});
 }

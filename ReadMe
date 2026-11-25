@@ -1,7 +1,6 @@
-To start to program first navigate to /client/imgaeApi.js and change the ip address assigned to the search_url variable.
+To start to program first navigate to /client/server_url.js and change the ip address assigned to the search_url variable.
 
-Right now it's: const server_url = "http://10.0.0.107:8000";
-It should be const server_url = "http://<your-ip>:8000";
+It should be: const server_url = "http://<your-ip>:8000";
 
 Then open /CanvasApp in terminal and run <npm start> or <node server.js> to boot up the server. 
 It will output the url to the client page, click on it to open. There you can now save and load images. 

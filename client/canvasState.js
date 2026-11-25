@@ -17,7 +17,7 @@ export function resetLine() {
     	width: null
     };
 }
-export function clear() {
+export function clearState() {
     state.drawing = false;
     state.paths = [];
     resetLine();

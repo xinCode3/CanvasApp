@@ -43,7 +43,7 @@ export async function displayImages(images, canvas) {
             state.paths = content.paths;
             overlay.remove();
             clearCanvas(ctx);
-            await drawCanvas(ctx);            
+            await drawCanvas(ctx);
         });
 
         const index = image.filename.lastIndexOf("-");

@@ -15,14 +15,9 @@ pencil.src = server_url + "/client/pencil.png";
 export function getCoords(event, canvas) {
     const rect = canvas.getBoundingClientRect();
     return {
-        rel: [
-            event.clientX - rect.left,     
-            event.clientY - rect.top
-        ], 
-        abs: [
-            event.clientX,
-            event.clientY
-        ]};
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top
+           };
 }
 
 export function clearCanvas(ctx) {
@@ -37,50 +32,63 @@ export async function drawStroke(ctx, x1, y1, x2, y2) {
         ctx.stroke();
 }
 
+export function updateCanvas(ctx) {
+    for(const line of state.paths) {
+        ctx.strokeStyle = line.color ?? "black";
+        ctx.lineWidth = line.width ?? 5;
+        for (let i = 0; i < line.path.length - 1; i++) {
+            const coords1 = line.path[i];
+            const coords2 = line.path[i+1];
+            drawStroke(ctx, coords1.x, coords1.y, coords2.x, coords2.y);
+        }
+    }
+}
+
 export async function drawCanvas(ctx) {
     const canvas_container = document.querySelector(".drawing-area");
     canvas_container.appendChild(pencil);
     is_drawing = true;
     for (const line of state.paths) {
-        if(cancel_drawing) { 
-            pencil.remove(); 
-            clearCanvas();
-            cancel = false;
-            is_drawing = false;
-            return; 
+        if (cancel_drawing) {
+            stopDrawing(ctx);
+            return;
         }
         ctx.strokeStyle = line.color ?? "black";
         ctx.lineWidth = line.width ?? 5;
         for (let i = 0; i < line.path.length - 1; i++) {
-       	    const { rel: rel1, abs: abs1 } = line.path[i];
-       	    const { rel: rel2, abs: abs2 } = line.path[i+1];
-       	    await selfDrawStroke(ctx, rel1[0], rel1[1], 
-                                    rel2[0], rel2[1], 
-                                    abs1[0], abs1[1], 
-                                    abs2[0], abs2[1]);
+            const coords1 = line.path[i];
+            const coords2 = line.path[i+1];
+            const completed = await selfDrawStroke(ctx, coords1.x, coords1.y, coords2.x, coords2.y);
+            if (!completed) {
+                stopDrawing(ctx);
+                return;
+            }
        	}
     }
     is_drawing = false;
     pencil.remove();
 }
 
-async function selfDrawStroke(ctx, x1r, y1r, x2r, y2r, x1a, y1a, x2a, y2a) {
-        if(cancel_drawing) {
-            clearCanvas();
-            cancel = false;
-            is_drawing = false;
-            pencil.remove();
-            return;
-        }
+function stopDrawing(ctx) {
+    clearCanvas(ctx);
+    cancel(false);
+    is_drawing = false;
+    pencil.remove();
+}
+
+async function selfDrawStroke(ctx, x1, y1, x2, y2) {
+        if (cancel_drawing) return false;
         ctx.beginPath();
-        ctx.moveTo(x1r, y1r);
-        pencil.style.left = `${x1a-5}px`;
-        pencil.style.top  = `${y1a-20}px`;
-        await sleep(1);
-        ctx.lineTo(x2r, y2r);
-        pencil.style.left = `${x2a-5}px`;
-        pencil.style.top  = `${y2a-20}px`;
+        ctx.moveTo(x1, y1);
+        pencil.style.left = `${x1}px`;
+        pencil.style.top  = `${y1}px`;
+        await sleep(2);
+        if (cancel_drawing) return false;
+        ctx.lineTo(x2, y2);
+        pencil.style.left = `${x2}px`;
+        pencil.style.top  = `${y2}px`;
         ctx.stroke();
+        return true;
 }
 
 async function sleep(ms) {

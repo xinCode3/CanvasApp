@@ -1,10 +1,11 @@
 import { state, resetLine } from "./canvasState.js";
-import { getCoords, drawStroke } from "./canvasRenderer.js";
+import { getCoords, drawStroke, is_drawing } from "./canvasRenderer.js";
 
 export function bindCanvasListeners(canvas, colorInput) {
     const ctx = canvas.getContext("2d");
     canvas.addEventListener("pointerdown", (event) => {
-        const coords = getCoords(event, canvas);
+        if(is_drawing) return;
+        const coords  = getCoords(event, canvas);
 	    state.drawing = true;
 	    state.selectedColor = colorInput.value;
 	    state.line.color = state.selectedColor;
@@ -15,14 +16,15 @@ export function bindCanvasListeners(canvas, colorInput) {
     });
 
     canvas.addEventListener("pointermove", (event) => {
-	    if(!state.drawing) return;
-	    const coords = getCoords(event, canvas);
-	    const { rel } = state.line.path[state.line.path.length-1];
-        drawStroke(ctx, rel[0], rel[1], coords.rel[0], coords.rel[1], self_draw);
-	    state.line.path.push(coords);
+	    if(!state.drawing || is_drawing) return;
+	    const next  = getCoords(event, canvas);
+	    const last  = state.line.path.at(-1);
+        drawStroke(ctx, last.x, last.y, next.x, next.y);
+	    state.line.path.push(next);
     });
 
     canvas.addEventListener("pointerup", (event) => {
+        if(is_drawing) return;
 	    if(state.line.path.length > 0) {
 	        state.paths.push(state.line);
 	    }
@@ -31,11 +33,12 @@ export function bindCanvasListeners(canvas, colorInput) {
     });
 
     canvas.addEventListener("pointerout", (event) => {
+        if(is_drawing) return;
 	    if(state.drawing) {
-		    const coords = getCoords(event, canvas);
-            const { rel } = state.line.path[state.line.path.length-1];
-            drawStroke(ctx, rel[0], rel[1], coords.rel[0], coords.rel[1], self_draw);
-		    state.line.path.push(coords);
+		    const next  = getCoords(event, canvas);
+            const last  = state.line.path.at(-1);
+            drawStroke(ctx, last.x, last.y, next.x, next.y);
+            state.line.path.push(next);
 		    state.paths.push(state.line);
 	    	resetLine();
 	    }
